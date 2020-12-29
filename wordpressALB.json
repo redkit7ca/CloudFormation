@@ -1,0 +1,56 @@
+{
+    "AWSTemplateFormatVersion": "2010-09-09",
+    "Description": 
+    "This template is for VPC, ALB (Aplication Load Balancer), ASG (Auto Scaling Group)",
+    "Parameters":
+    {
+        "WebServerKeyName":
+        {
+            "Description":"This key is used for ssh into EC2 instance",
+            "Type": "AWS::EC2::KeyPair::KeyName"
+        }
+    },
+    "Resources":
+    {
+        "VPC":
+        {
+            "Type":"AWS::EC2::VPC",
+            "Properties":{
+                "CidrBlock":"10.99.0.0./16",
+                "EnableDnsHostnames":true,
+                "EnableDnsSupport":true,
+                "Tags":[
+                    {
+                        "Key":"Name",
+                        "Value":"BlockVPC"
+                    }
+                ]
+            }
+        },
+        "InternetGateWay":
+        {
+            "Type": "AWS::EC2::InternetGateway",
+            "Properties":
+            {
+                "Tags": [ { "Key": "Name", "Value": "BlockIGW"} ]
+            }
+        },
+        "VPCGatewayAttachment":
+        {
+            "Type": "AWS::EC2::VPCGatewayAttachment",
+            "Properties": 
+            {
+                "VpcId":
+                {
+                    "Ref":"VPC"
+                },
+                "InternetGatewayId": 
+                {
+                    "Ref": "InternetGateway"
+                }
+            }
+        }
+        
+
+    }
+}

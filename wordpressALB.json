@@ -127,7 +127,8 @@
                 ]
             }
         },
-        "Applayer2private":{
+        "Applayer2private":
+        {
             "Type":"AWS::EC2::Subnet",
             "Properties":
             {
@@ -150,7 +151,60 @@
                             "Value":"Applayer2private"
                         }
                     ]
+            }
+        },
+        "PublicRT":{
+            "Type":"AWS::EC2::RouteTable",
+            "Properties":{
+                "VpcId":{
+                    "Ref":"VPC"
+                },
+                "Tags":[
+                    {
+                        "Key":"Name",
+                        "Value":"PublicRT"
+                    }
+                ]
+            }
+        },
+        "RouteTableAssociationA":
+        {
+            "Type":"AWS::EC2::RouteTableAssociation",
+            "Properties":
+            {
+                "SubnetId":{
+                    "Ref":"DMZ1public"
+                },
+                "RouteTableId":{
+                    "Ref":"PublicRT"
                 }
-            }   
+            }
+        },
+        "RouteTableAssociationB":
+        {
+            "Type":"AWS::EC2::RouteTableAssociation",
+            "Properties":
+            {
+                "SubnetId":{
+                    "Ref":"DMZ2public"
+                },
+                "RouteTableId":{
+                    "Ref":"PublicRT"
+                }
+            }
+        },
+        "RoutePublicToInternet":{
+            "Type":"AWS::EC2::Route",
+            "Properties":{
+                "RouteTableId":{
+                    "Ref":"PublicRT"
+                },
+                "DestinationCidrBlock":"0.0.0.0/0",
+                "GatewayId":{
+                    "Ref":"InternetGateway"
+                }
+            },
+            "DependsOn":"VPCGatewayAttachment"
+        }
     }
 }

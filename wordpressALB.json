@@ -1,7 +1,6 @@
 {
     "AWSTemplateFormatVersion": "2010-09-09",
-    "Description": 
-    "This template is for VPC, ALB (Aplication Load Balancer), ASG (Auto Scaling Group)",
+    "Description": "This template is for VPC, ALB (Aplication Load Balancer), ASG (Auto Scaling Group)",
     "Parameters":
     {
         "WebServerKeyName":
@@ -16,7 +15,7 @@
         {
             "Type":"AWS::EC2::VPC",
             "Properties":{
-                "CidrBlock":"10.99.0.0./16",
+                "CidrBlock":"10.0.0.0/16",
                 "EnableDnsHostnames":true,
                 "EnableDnsSupport":true,
                 "Tags":[
@@ -27,12 +26,17 @@
                 ]
             }
         },
-        "InternetGateWay":
+        "InternetGateway":
         {
             "Type": "AWS::EC2::InternetGateway",
             "Properties":
             {
-                "Tags": [ { "Key": "Name", "Value": "BlockIGW"} ]
+                "Tags": [ 
+                    { 
+                        "Key": "Name", 
+                        "Value": "BlockIGW"
+                    } 
+                ]
             }
         },
         "VPCGatewayAttachment":        
@@ -58,12 +62,13 @@
                 "AvailabilityZone":
                 {
                     "Fn::Select":[
-                        "0",{
+                        "0",
+                        {
                             "Fn::GetAZs":""
                         }
                     ]
                 },
-                "CidrBlock":"10.99.1.0./24",
+                "CidrBlock":"10.0.1.0/24",
                 "VpcId":
                 {
                     "Ref":"VPC"
@@ -84,12 +89,13 @@
                 "AvailabilityZone":
                 {
                     "Fn::Select":[
-                            "1",{
+                            "1",
+                            {
                                 "Fn::GetAZs":""
                             }
                         ]
                     },
-                    "CidrBlock":"10.99.2.0./24",
+                    "CidrBlock":"10.0.2.0/24",
                     "VpcId":{
                         "Ref":"VPC"
                     },
@@ -101,7 +107,6 @@
                         }
                     ]
                 }
-
         },
         "Applayer1private":{
             "Type":"AWS::EC2::Subnet",
@@ -109,12 +114,13 @@
             {
                 "AvailabilityZone":{
                     "Fn::Select":[
-                        "0",{
+                        "0",
+                        {
                             "Fn::GetAZs":""
                         }
                     ]
                 },
-                "CidrBlock":"10.99.11.0./24",
+                "CidrBlock":"10.0.11.0/24",
                 "VpcId":{
                     "Ref":"VPC"
                 },
@@ -135,12 +141,13 @@
                 "AvailabilityZone":
                 {
                     "Fn::Select":[
-                        "1",{
+                        "1",
+                        {
                             "Fn::GetAZs":""
                             }
                         ]
                 },
-                "CidrBlock":"10.99.12.0./24",
+                "CidrBlock":"10.0.12.0/24",
                 "VpcId":{
                         "Ref":"VPC"
                     },
@@ -169,7 +176,7 @@
         },
         "RouteTableAssociationA":
         {
-            "Type":"AWS::EC2::RouteTableAssociation",
+            "Type":"AWS::EC2::SubnetRouteTableAssociation",
             "Properties":
             {
                 "SubnetId":{
@@ -182,7 +189,7 @@
         },
         "RouteTableAssociationB":
         {
-            "Type":"AWS::EC2::RouteTableAssociation",
+            "Type":"AWS::EC2::SubnetRouteTableAssociation",
             "Properties":
             {
                 "SubnetId":{

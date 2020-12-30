@@ -212,6 +212,84 @@
                 }
             },
             "DependsOn":"VPCGatewayAttachment"
+        },
+        "NATElasticIp":
+        {
+            "Type" : "AWS::EC2::EIP",
+            "Properties":{
+                "Domain":"vpc"
+            },
+            "DependsOn":"VPCGatewayAttachment"
+        },
+        "NATGateway":
+        {
+            "Type" : "AWS::EC2::NatGateway",
+            "DependsOn":"NATElasticIp",
+            "Properties":
+            {
+                "AllocationId":
+                {
+                    "Fn::GetAtt":[
+                        "NATElasticIp","AllocationId"
+                    ]
+                },
+                "SubnetId":{
+                    "Ref":"DMZ2public"
+                }            
+            }            
+        },
+        "NateGatewayRoute":{
+            "Type":"AWS::EC2::Route",
+            "Properties":{
+                "RouteTableId":{
+                    "Ref":"PrivateRT"
+                },
+                "DestinationCidrBlock":"0.0.0.0/0",
+                "NATGatewayId":
+                {
+                    "Ref":"NATGateway"
+                }
+            }
+        },
+        "PrivateRT":{
+            "Type":"AWS::EC2::RouteTable",
+            "Properties":{
+                "VpcId":{
+                    "Ref":"VPC"
+                },
+                "Tags":[
+                    {
+                        "Key":"Name",
+                        "Value":"PrivateRT"
+                    }
+                ]
+            }
+        },
+        "RouteTableAssociationC":
+        {
+            "Type":"AWS::EC2::SubnetRouteTableAssociation",
+            "Properties":
+            {
+                "SubnetId":{
+                    "Ref":"AppLayer1Private"
+                },
+                "RouteTableId":{
+                    "Ref":"PrivateRT"
+                }
+            }
+        },
+        "RouteTableAssociationD":
+        {
+            "Type":"AWS::EC2::SubnetRouteTableAssociation",
+            "Properties":
+            {
+                "SubnetId":{
+                    "Ref":"AppLayer2Private"
+                },
+                "RouteTableId":{
+                    "Ref":"PrivateRT"
+                }
+            }
         }
     }
 }

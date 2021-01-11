@@ -935,6 +935,19 @@
                 ]
             }
         },
+        "ASGCPUPolicy": {
+            "Type": "AWS::AutoScaling::ScalingPolicy",
+            "Properties": {
+                "AutoScalingGroupName": {
+                    "Ref": "AutoScalingGroup" 
+                },
+                "Cooldown" : 300,
+                "ScalingAdjustment": 90,
+                "PredefinedMetricSpecification": {
+                    "PredefinedMetricType": "ASGAverageCPUUtilization"
+                }
+
+            },  
         "BastionInstance":
         {
             "Type":"AWS::EC2::Instance",
